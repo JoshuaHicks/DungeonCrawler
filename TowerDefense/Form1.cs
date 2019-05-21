@@ -14,19 +14,31 @@ namespace TowerDefense
     {
         private Bloon bloon1 = new Bloon(); // creating a single red bloon
 
+        private List<Tower> towerList = new List<Tower>();
         private List<Bloon> bloonList = new List<Bloon>();
 
         public bool startRound = false;
 
+        public PictureBox newPB;
+
+        public int currentGameTime;
+
         public Form1()
         {
             InitializeComponent();
+            currentGameTime = 0;
 
             new Settings(); // linking the settings class to this form
 
             gameTimer.Interval = 1000 / Settings.Speed;
             gameTimer.Tick += updateScreen;
             gameTimer.Start();
+
+            newPB = new PictureBox();
+            newPB.Size = pbBasicTower.Size;
+            newPB.Left = -100;
+            newPB.Top = -100;
+            pbCanvas.Controls.Add(newPB);
 
             startGame();
         }
@@ -42,13 +54,23 @@ namespace TowerDefense
                 // draw bloon
                 for (int i=0; i<bloonList.Count; i++)
                 {
-                    canvas.FillEllipse(Brushes.Blue, new Rectangle(bloonList[i].X, bloonList[i].Y, Settings.Width, Settings.Height));
+                    canvas.FillEllipse(Brushes.Red, new Rectangle(bloonList[i].X, bloonList[i].Y, Settings.Width, Settings.Height));
+                }
+
+                //Draw projectiles
+                for (int i=0; i<towerList.Count; i++)
+                {
+                    for (int j=0; j<towerList[i].projectileList.Count; j++)
+                    {
+                        canvas.FillEllipse(Brushes.Black, new Rectangle(towerList[i].projectileList[j].X, towerList[i].projectileList[j].Y, 5, 5));
+                    }
                 }
             }
             else
             {
                 // Gameover
             }
+            currentGameTime++;
         }
 
         private void updateScreen(object sender, EventArgs e)
@@ -66,8 +88,68 @@ namespace TowerDefense
             else
             {
                 moveBloons();
+
+                // if bloon is in range of tower
+               // for (int i=0; i<towerList.Count; i++)
+                //{
+                    // if bloon is in range of tower
+                    //for (int j=0; j<bloonList.Count; j++)
+                    //{
+                        //if (bloonList[j].isMoving)
+                        //{
+                            //Console.WriteLine("Bloon x = " + bloonList[j].X);
+                            //Console.WriteLine("Tower x = " + towerList[i].X);
+
+                            //if (Math.Abs((towerList[i].X - towerList[i].range) - bloonList[j].X) <= 5)
+                            //{
+                                 //shootBloons(towerList[i]);
+                            //}
+                       //}
+                    //}
+                    //shootBloons(towerList[i]);
+                //}
+                
             }
             pbCanvas.Invalidate();
+        }
+
+        private void shootBloons(Tower currTower)
+        {
+            if (currentGameTime % 20 == 0)
+                currTower.shootProjectiles();
+
+            for (int j = 0; j < currTower.projectileList.Count; j++)
+            {
+                if (currTower.projectileList[j].X < currTower.X - currTower.range) //update this
+                    currTower.projectileList.Remove(currTower.projectileList[j]);
+                else
+                    currTower.projectileList[j].X--;
+            }
+
+            checkIfBloonWasHit();
+        }
+
+        private void checkIfBloonWasHit()
+        {
+            for (int i=0; i<towerList.Count; i++)
+            {
+                for (int j=0; j<towerList[i].projectileList.Count; j++)
+                {
+                    for (int k=0; k<bloonList.Count; k++)
+                    {
+                        if (bloonList[k].isMoving)
+                        {
+                            if ((Math.Abs(bloonList[k].X - towerList[i].projectileList[j].X) <= 12) && (Math.Abs(bloonList[k].Y - towerList[i].projectileList[j].Y) <= 12))
+                            {
+                                bloonList.Remove(bloonList[k]);
+                                towerList[i].projectileList.Remove(towerList[i].projectileList[j]);
+                                Settings.Money++;
+                                lblMoneyVal.Text = "$" + Settings.Money.ToString();
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void moveBloons()
@@ -76,14 +158,14 @@ namespace TowerDefense
             {
                 for (int i = 0; i < bloonList.Count; i++)
                 {
-                    if (i == 0)
+                    for (int t = 0; t<towerList.Count; t++)
                     {
-                        bloonList[i].isMoving = true;
+                        if (Math.Abs((towerList[t].X - towerList[t].range) - bloonList[i].X) <= 15)
+                        {
+                            shootBloons(towerList[t]);
+                        }
                     }
-                    else if (bloonList[i - 1].Y > 0)
-                    {
-                        bloonList[i].isMoving = true;
-                    }
+
                     if (bloonList[i].isMoving)
                     {
                         switch (bloonList[i].trackSection)
@@ -138,6 +220,17 @@ namespace TowerDefense
                                 break;
                         }
                     }
+                    else
+                    {
+                        if (i == 0)
+                        {
+                            bloonList[i].isMoving = true;
+                        }
+                        else if (bloonList[i - 1].Y > 0)
+                        {
+                            bloonList[i].isMoving = true;
+                        }
+                    }
                 }
             }
         }
@@ -170,22 +263,36 @@ namespace TowerDefense
         private void pbBasicTower_MouseDown(object sender, MouseEventArgs e)
         {
             isDragging = true;
-
+            
             currentX = e.X;
             currentY = e.Y;
         }
 
+        
         private void pbBasicTower_MouseMove(object sender, MouseEventArgs e)
         {
             if (isDragging)
             {
-                pbBasicTower.Top = pbBasicTower.Top + (e.Y - currentY);
-                pbBasicTower.Left = pbBasicTower.Left + (e.X - currentX);
+                newPB.Image = pbBasicTower.Image;
+                newPB.Top = pbBasicTower.Top + (e.Y - currentY);
+                newPB.Left = pbBasicTower.Left + (e.X - currentX);
             }
         }
 
         private void pbBasicTower_MouseUp(object sender, MouseEventArgs e)
         {
+            PictureBox pb = new PictureBox();
+            pb.Top = pbBasicTower.Top + (e.Y - currentY);
+            pb.Left = pbBasicTower.Left + (e.X - currentX);
+            pb.Image = pbBasicTower.Image;
+            pb.Size = pbBasicTower.Size;
+            pbCanvas.Controls.Add(pb);
+
+            towerList.Add(new Tower(pb));
+
+            newPB.Left = -100;
+            newPB.Top = -100;
+
             isDragging = false;
         }
 
