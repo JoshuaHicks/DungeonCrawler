@@ -42,7 +42,7 @@ namespace TowerDefense
                 // draw bloon
                 for (int i=0; i<bloonList.Count; i++)
                 {
-                    canvas.FillEllipse(Brushes.Red, new Rectangle(bloonList[i].X, bloonList[i].Y, Settings.Width, Settings.Height));
+                    canvas.FillEllipse(Brushes.Blue, new Rectangle(bloonList[i].X, bloonList[i].Y, Settings.Width, Settings.Height));
                 }
             }
             else
@@ -91,7 +91,7 @@ namespace TowerDefense
                             case TrackSections.Section1:
                                 if (bloonList[i].Y < 65)
                                 {
-                                    bloonList[i].Y++;
+                                    bloonList[i].Y+=bloonList[i].speed;
                                 }
                                 else
                                 {
@@ -101,7 +101,7 @@ namespace TowerDefense
                             case TrackSections.Section2:
                                 if (bloonList[i].X < 328)
                                 {
-                                    bloonList[i].X++;
+                                    bloonList[i].X+= bloonList[i].speed;
                                 }
                                 else
                                 {
@@ -111,7 +111,7 @@ namespace TowerDefense
                             case TrackSections.Section3:
                                 if (bloonList[i].Y < 302)
                                 {
-                                    bloonList[i].Y++;
+                                    bloonList[i].Y+= bloonList[i].speed;
                                 }
                                 else
                                 {
@@ -121,7 +121,7 @@ namespace TowerDefense
                             case TrackSections.Section4:
                                 if (bloonList[i].X > 189)
                                 {
-                                    bloonList[i].X--;
+                                    bloonList[i].X-= bloonList[i].speed;
                                 }
                                 else
                                 {
@@ -131,7 +131,7 @@ namespace TowerDefense
                             case TrackSections.Section5:
                                 if (bloonList[i].Y < 510)
                                 {
-                                    bloonList[i].Y++;
+                                    bloonList[i].Y+= bloonList[i].speed;
                                 }
                                 break;
                             default:
@@ -155,7 +155,7 @@ namespace TowerDefense
         {
             for (int i=0; i<100; i++)
             {
-                bloonList.Add(new Bloon() { X = 95, Y = -30, trackSection = TrackSections.Section1 });
+                bloonList.Add(new Bloon() { X = 95, Y = -30, trackSection = TrackSections.Section1 , speed = 2});
             }
         }
 

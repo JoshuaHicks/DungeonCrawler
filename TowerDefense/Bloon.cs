@@ -28,6 +28,7 @@ namespace TowerDefense
     {
         public int X { get; set; } // x pos of bloon
         public int Y { get; set; } // y pos of bloon
+        public int speed { get; set; } //speed of the bloon
         public Types type { get; set; } // the type of bloon
         public TrackSections trackSection { get; set; }
         public bool isMoving { get; set; }
@@ -36,6 +37,7 @@ namespace TowerDefense
         {
             X = 0;
             Y = 0;
+            speed = 1; // Default is 1
             isMoving = false;
         }
     }
