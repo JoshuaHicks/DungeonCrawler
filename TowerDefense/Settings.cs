@@ -29,7 +29,7 @@ namespace TowerDefense
             // Default settings
             Width = 16;
             Height = 16;
-            Speed = 300;
+            Speed = 60;
             Money = 800;
             Points = 100;
             GameOver = false;

@@ -29,9 +29,9 @@ namespace TowerDefense
             range = 150;
         }
 
-        public void shootProjectiles()
+        public void shootProjectiles(double angle, int signX, int signY)
         {
-            projectileList.Add(new Projectile(X, Y));
+            projectileList.Add(new Projectile(X, Y, angle, signX, signY));
         }
     }
 

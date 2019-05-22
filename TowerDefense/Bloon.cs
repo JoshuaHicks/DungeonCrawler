@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,13 +33,33 @@ namespace TowerDefense
         public Types type { get; set; } // the type of bloon
         public TrackSections trackSection { get; set; }
         public bool isMoving { get; set; }
+        public Brush colour { get; set; }
 
-        public Bloon()
+        public Bloon(Types bloonType)
         {
             X = 0;
             Y = 0;
             speed = 1; // Default is 1
             isMoving = false;
+
+            switch (bloonType)
+            {
+                case Types.Red:
+                    colour = Brushes.Red;
+                    break;
+                case Types.Blue:
+                    colour = Brushes.Blue;
+                    break;
+                case Types.Yellow:
+                    colour = Brushes.Yellow;
+                    break;
+                case Types.Pink:
+                    colour = Brushes.Pink;
+                    break;
+                default:
+                    colour = Brushes.Black;
+                    break;
+            }
         }
     }
 }

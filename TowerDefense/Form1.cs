@@ -12,8 +12,6 @@ namespace TowerDefense
 {
     public partial class Form1 : Form
     {
-        private Bloon bloon1 = new Bloon(); // creating a single red bloon
-
         private List<Tower> towerList = new List<Tower>();
         private List<Bloon> bloonList = new List<Bloon>();
 
@@ -51,20 +49,42 @@ namespace TowerDefense
 
             if (Settings.GameOver == false)
             {
-                // draw bloon
-                for (int i=0; i<bloonList.Count; i++)
+                try
                 {
-                    canvas.FillEllipse(Brushes.Red, new Rectangle(bloonList[i].X, bloonList[i].Y, Settings.Width, Settings.Height));
+                    // draw bloon
+                    for (int i = 0; i < bloonList.Count; i++)
+                    {
+                        canvas.FillEllipse(bloonList[i].colour, new Rectangle(bloonList[i].X, bloonList[i].Y, Settings.Width, Settings.Height));
+                    }
+
+                    //Draw projectiles
+                    for (int i = 0; i < towerList.Count; i++)
+                    {
+                        for (int j = 0; j < towerList[i].projectileList.Count; j++)
+                        {
+                            towerList[i].projectileList[j].X += (int)towerList[i].projectileList[j].speedX;
+                            towerList[i].projectileList[j].Y += (int)towerList[i].projectileList[j].speedY;
+
+                            if (towerList[i].projectileList[j].X < 0 ||
+                                towerList[i].projectileList[j].X > pbCanvas.Width ||
+                                towerList[i].projectileList[j].Y < 0 ||
+                                towerList[i].projectileList[j].Y > pbCanvas.Height)
+                            {
+                                towerList[i].projectileList.Remove(towerList[i].projectileList[j]);
+                            }
+                            //Console.WriteLine("speedX = " + (int)towerList[i].projectileList[j].speedX);
+                            //Console.WriteLine("speedY = " + (int)towerList[i].projectileList[j].speedY);
+                            canvas.FillEllipse(Brushes.Black, new Rectangle(towerList[i].projectileList[j].X, towerList[i].projectileList[j].Y, 5, 5));
+                        }
+                        // Drawing the range of the towers
+                        canvas.DrawEllipse(Pens.Red, new RectangleF(towerList[i].X - (towerList[i].range / 2), towerList[i].Y - (towerList[i].range / 2), towerList[i].range, towerList[i].range));
+                    }
+                } catch (Exception ex)
+                {
+
                 }
 
-                //Draw projectiles
-                for (int i=0; i<towerList.Count; i++)
-                {
-                    for (int j=0; j<towerList[i].projectileList.Count; j++)
-                    {
-                        canvas.FillEllipse(Brushes.Black, new Rectangle(towerList[i].projectileList[j].X, towerList[i].projectileList[j].Y, 5, 5));
-                    }
-                }
+                
             }
             else
             {
@@ -88,92 +108,103 @@ namespace TowerDefense
             else
             {
                 moveBloons();
-
-                // if bloon is in range of tower
-               // for (int i=0; i<towerList.Count; i++)
-                //{
-                    // if bloon is in range of tower
-                    //for (int j=0; j<bloonList.Count; j++)
-                    //{
-                        //if (bloonList[j].isMoving)
-                        //{
-                            //Console.WriteLine("Bloon x = " + bloonList[j].X);
-                            //Console.WriteLine("Tower x = " + towerList[i].X);
-
-                            //if (Math.Abs((towerList[i].X - towerList[i].range) - bloonList[j].X) <= 5)
-                            //{
-                                 //shootBloons(towerList[i]);
-                            //}
-                       //}
-                    //}
-                    //shootBloons(towerList[i]);
-                //}
-                
             }
             pbCanvas.Invalidate();
         }
 
-        private void shootBloons(Tower currTower)
+        private void shootBloons(Tower currTower, double angle, int signX, int signY)
         {
-            if (currentGameTime % 20 == 0)
-                currTower.shootProjectiles();
-
-            for (int j = 0; j < currTower.projectileList.Count; j++)
-            {
-                if (currTower.projectileList[j].X < currTower.X - currTower.range) //update this
-                    currTower.projectileList.Remove(currTower.projectileList[j]);
-                else
-                    currTower.projectileList[j].X--;
-            }
-
-            checkIfBloonWasHit();
+            if (currentGameTime % 5 == 0)
+                currTower.shootProjectiles(angle, signX, signY);
+            
         }
 
         private void checkIfBloonWasHit()
         {
-            for (int i=0; i<towerList.Count; i++)
+            try
             {
-                for (int j=0; j<towerList[i].projectileList.Count; j++)
+                for (int i = 0; i < towerList.Count; i++)
                 {
-                    for (int k=0; k<bloonList.Count; k++)
+                    for (int j = 0; j < towerList[i].projectileList.Count; j++)
                     {
-                        if (bloonList[k].isMoving)
+                        for (int k = 0; k < bloonList.Count; k++)
                         {
-                            if ((Math.Abs(bloonList[k].X - towerList[i].projectileList[j].X) <= 12) && (Math.Abs(bloonList[k].Y - towerList[i].projectileList[j].Y) <= 12))
+                            var d = Math.Sqrt(Math.Pow(towerList[i].projectileList[j].X - bloonList[k].X, 2) + Math.Pow(towerList[i].projectileList[j].Y - bloonList[k].Y, 2));
+                            //Console.WriteLine("d = " + d);
+                            if (d <= 15)
                             {
                                 bloonList.Remove(bloonList[k]);
                                 towerList[i].projectileList.Remove(towerList[i].projectileList[j]);
                                 Settings.Money++;
                                 lblMoneyVal.Text = "$" + Settings.Money.ToString();
                             }
+
                         }
                     }
                 }
+            } catch (Exception e)
+            {
+
             }
+            
         }
 
         private void moveBloons()
         {
             if (startRound)
             {
-                for (int i = 0; i < bloonList.Count; i++)
+                try
                 {
-                    for (int t = 0; t<towerList.Count; t++)
+                    for (int i = 0; i < bloonList.Count; i++)
                     {
-                        if (Math.Abs((towerList[t].X - towerList[t].range) - bloonList[i].X) <= 15)
+                        for (int t = 0; t < towerList.Count; t++)
                         {
-                            shootBloons(towerList[t]);
-                        }
-                    }
+                            // Pythagorean Therorem
+                            // d = sqrt((x0 - x1)^2 + (y0 - y1)^2)
+                            // (x0, y0) -> center of circle
+                            // (x1, y1) -> bloon position
+                            // if d <= range / 2
 
-                    if (bloonList[i].isMoving)
-                    {
+                            var d = Math.Sqrt(Math.Pow(towerList[t].X - bloonList[i].X, 2) + Math.Pow(towerList[t].Y - bloonList[i].Y, 2));
+
+                            if (d <= towerList[t].range / 2)
+                            {
+                                // set angle of the projectile
+                                double opposite = Math.Abs(bloonList[i].Y - towerList[t].Y);
+                                double adjacent = Math.Abs(bloonList[i].X - towerList[t].X);
+                                double angle = 0;
+                                if (opposite != 0)
+                                    angle = Math.Atan(adjacent / opposite);
+
+                                int signX = 1, signY = 1;
+
+                                if (bloonList[i].X <= towerList[t].X && bloonList[i].Y <= towerList[t].Y) // top-left
+                                {
+                                    signX = -1;
+                                    signY = -1;
+                                }
+                                else if (bloonList[i].X >= towerList[t].X && bloonList[i].Y <= towerList[t].Y) // top-right
+                                {
+                                    signX = 1;
+                                    signY = -1;
+                                }
+                                else if (bloonList[i].X <= towerList[t].X && bloonList[i].Y >= towerList[t].Y) // bottom-left
+                                {
+                                    signX = -1;
+                                    signY = 1;
+                                }
+
+                                //Console.WriteLine("Angle = " + angle);
+                                shootBloons(towerList[t], angle, signX, signY);
+                            }
+                        }
+
                         switch (bloonList[i].trackSection)
                         {
                             case TrackSections.Section1:
                                 if (bloonList[i].Y < 65)
                                 {
-                                    bloonList[i].Y+=bloonList[i].speed;
+                                    bloonList[i].Y += bloonList[i].speed;
                                 }
                                 else
                                 {
@@ -181,9 +212,9 @@ namespace TowerDefense
                                 }
                                 break;
                             case TrackSections.Section2:
-                                if (bloonList[i].X < 328)
+                                if (bloonList[i].X < 326)
                                 {
-                                    bloonList[i].X+= bloonList[i].speed;
+                                    bloonList[i].X += bloonList[i].speed;
                                 }
                                 else
                                 {
@@ -193,7 +224,7 @@ namespace TowerDefense
                             case TrackSections.Section3:
                                 if (bloonList[i].Y < 302)
                                 {
-                                    bloonList[i].Y+= bloonList[i].speed;
+                                    bloonList[i].Y += bloonList[i].speed;
                                 }
                                 else
                                 {
@@ -203,7 +234,7 @@ namespace TowerDefense
                             case TrackSections.Section4:
                                 if (bloonList[i].X > 189)
                                 {
-                                    bloonList[i].X-= bloonList[i].speed;
+                                    bloonList[i].X -= bloonList[i].speed;
                                 }
                                 else
                                 {
@@ -213,25 +244,24 @@ namespace TowerDefense
                             case TrackSections.Section5:
                                 if (bloonList[i].Y < 510)
                                 {
-                                    bloonList[i].Y+= bloonList[i].speed;
+                                    bloonList[i].Y += bloonList[i].speed;
+                                }
+                                else
+                                {
+                                    bloonList.Remove(bloonList[i]);
                                 }
                                 break;
                             default:
                                 break;
                         }
                     }
-                    else
-                    {
-                        if (i == 0)
-                        {
-                            bloonList[i].isMoving = true;
-                        }
-                        else if (bloonList[i - 1].Y > 0)
-                        {
-                            bloonList[i].isMoving = true;
-                        }
-                    }
                 }
+                catch (Exception e)
+                {
+
+                }
+                
+                checkIfBloonWasHit();
             }
         }
 
@@ -241,14 +271,26 @@ namespace TowerDefense
 
             lblMoneyVal.Text = "$" + Settings.Money.ToString();
 
-            generateBloons();
+            generateBloons(1);
         }
 
-        private void generateBloons()
+        private void generateBloons(int round)
         {
-            for (int i=0; i<100; i++)
+            switch (round)
             {
-                bloonList.Add(new Bloon() { X = 95, Y = -30, trackSection = TrackSections.Section1 , speed = 2});
+                case 1:
+                    for (int i = 0; i < 1; i++)
+                    {
+                        if (i == 0)
+                        {
+                            bloonList.Add(new Bloon(Types.Red) { X = 95, Y = -30, trackSection = TrackSections.Section1, speed = 2 });
+                        }
+                        else
+                        {
+                            bloonList.Add(new Bloon(Types.Red) { X = 95, Y = bloonList[i - 1].Y - 35, trackSection = TrackSections.Section1, speed = 2 });
+                        }
+                    }
+                    break;
             }
         }
 
