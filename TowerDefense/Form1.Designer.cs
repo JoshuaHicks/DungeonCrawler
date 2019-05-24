@@ -39,6 +39,7 @@
             this.lblRound = new System.Windows.Forms.Label();
             this.lblRoundVal = new System.Windows.Forms.Label();
             this.lblBasicTowerPrice = new System.Windows.Forms.Label();
+            this.lblGameOver = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pbCanvas)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbBasicTower)).BeginInit();
             this.SuspendLayout();
@@ -129,11 +130,24 @@
             this.lblBasicTowerPrice.TabIndex = 11;
             this.lblBasicTowerPrice.Text = "$450";
             // 
+            // lblGameOver
+            // 
+            this.lblGameOver.AutoSize = true;
+            this.lblGameOver.BackColor = System.Drawing.Color.DarkOrange;
+            this.lblGameOver.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblGameOver.Location = new System.Drawing.Point(225, 225);
+            this.lblGameOver.Name = "lblGameOver";
+            this.lblGameOver.Size = new System.Drawing.Size(116, 24);
+            this.lblGameOver.TabIndex = 12;
+            this.lblGameOver.Text = "Game Over";
+            this.lblGameOver.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(691, 535);
+            this.Controls.Add(this.lblGameOver);
             this.Controls.Add(this.lblBasicTowerPrice);
             this.Controls.Add(this.lblRoundVal);
             this.Controls.Add(this.lblRound);
@@ -162,6 +176,7 @@
         private System.Windows.Forms.Label lblRound;
         private System.Windows.Forms.Label lblRoundVal;
         private System.Windows.Forms.Label lblBasicTowerPrice;
+        private System.Windows.Forms.Label lblGameOver;
     }
 }
 

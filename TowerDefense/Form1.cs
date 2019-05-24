@@ -61,6 +61,10 @@ namespace TowerDefense
                     for (int i = 0; i < bloonList.Count; i++)
                     {
                         canvas.FillEllipse(bloonList[i].colour, new Rectangle(bloonList[i].X, bloonList[i].Y, Settings.Width, Settings.Height));
+                        if (bloonList[i].Y > pbCanvas.Height)
+                        {
+                            die();
+                        }
                     }
 
                     //Draw projectiles
@@ -93,6 +97,7 @@ namespace TowerDefense
             else
             {
                 // Gameover
+                lblGameOver.Visible = Visible;
             }
             currentGameTime++;
         }
@@ -131,9 +136,7 @@ namespace TowerDefense
 
         private void shootBloons(Tower currTower, double angle, int signX, int signY)
         {
-            if (currentGameTime % 10 == 0)
-                currTower.shootProjectiles(angle, signX, signY);
-            
+            currTower.shootProjectiles(angle, signX, signY);
         }
 
         private void checkIfBloonWasHit()
@@ -225,8 +228,7 @@ namespace TowerDefense
                                 signX = -1;
                                 signY = 1;
                             }
-
-                            //Console.WriteLine("Angle = " + angle);
+                            
                             shootBloons(towerList[t], angle, signX, signY);
                         }
                     }
