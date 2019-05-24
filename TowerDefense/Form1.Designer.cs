@@ -38,6 +38,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.lblRound = new System.Windows.Forms.Label();
             this.lblRoundVal = new System.Windows.Forms.Label();
+            this.lblBasicTowerPrice = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pbCanvas)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbBasicTower)).BeginInit();
             this.SuspendLayout();
@@ -76,7 +77,7 @@
             // 
             // pbBasicTower
             // 
-            this.pbBasicTower.BackColor = System.Drawing.Color.Black;
+            this.pbBasicTower.BackColor = System.Drawing.Color.Transparent;
             this.pbBasicTower.Image = ((System.Drawing.Image)(resources.GetObject("pbBasicTower.Image")));
             this.pbBasicTower.Location = new System.Drawing.Point(529, 75);
             this.pbBasicTower.Name = "pbBasicTower";
@@ -118,11 +119,22 @@
             this.lblRoundVal.TabIndex = 10;
             this.lblRoundVal.Text = "00";
             // 
+            // lblBasicTowerPrice
+            // 
+            this.lblBasicTowerPrice.AutoSize = true;
+            this.lblBasicTowerPrice.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblBasicTowerPrice.Location = new System.Drawing.Point(532, 124);
+            this.lblBasicTowerPrice.Name = "lblBasicTowerPrice";
+            this.lblBasicTowerPrice.Size = new System.Drawing.Size(44, 17);
+            this.lblBasicTowerPrice.TabIndex = 11;
+            this.lblBasicTowerPrice.Text = "$450";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(691, 535);
+            this.Controls.Add(this.lblBasicTowerPrice);
             this.Controls.Add(this.lblRoundVal);
             this.Controls.Add(this.lblRound);
             this.Controls.Add(this.button1);
@@ -149,6 +161,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label lblRound;
         private System.Windows.Forms.Label lblRoundVal;
+        private System.Windows.Forms.Label lblBasicTowerPrice;
     }
 }
 

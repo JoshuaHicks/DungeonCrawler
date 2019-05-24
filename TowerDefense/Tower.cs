@@ -20,6 +20,7 @@ namespace TowerDefense
         public int Y { get; set; }
         public List<Projectile> projectileList { get; set; }
         public int range { get; set; } // diameter of circle range of tower
+        public int cost { get; set; }
 
         public Tower(PictureBox pb)
         {
@@ -27,6 +28,7 @@ namespace TowerDefense
             X = pb.Left + (pb.Width / 2);
             Y = pb.Top + (pb.Height / 2);
             range = 150;
+            cost = 450;
         }
 
         public void shootProjectiles(double angle, int signX, int signY)

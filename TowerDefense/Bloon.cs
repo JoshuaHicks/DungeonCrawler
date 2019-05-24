@@ -41,8 +41,31 @@ namespace TowerDefense
             Y = 0;
             speed = 1; // Default is 1
             isMoving = false;
+            type = bloonType;
 
             switch (bloonType)
+            {
+                case Types.Red:
+                    colour = Brushes.Red;
+                    break;
+                case Types.Blue:
+                    colour = Brushes.Blue;
+                    break;
+                case Types.Yellow:
+                    colour = Brushes.Yellow;
+                    break;
+                case Types.Pink:
+                    colour = Brushes.Pink;
+                    break;
+                default:
+                    colour = Brushes.Black;
+                    break;
+            }
+        }
+
+        public void setColour()
+        {
+            switch (type)
             {
                 case Types.Red:
                     colour = Brushes.Red;
